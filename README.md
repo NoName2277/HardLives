@@ -11,7 +11,7 @@ Komendy:
   - Usage: /dajzycie <player> <ilość>
 
 permisje:
--HardLives.*:
+- HardLives.*:
 -   description: Daje wszystkie permisjie
 - HardLives.potionoflife:
 -   description: daje permisje do komendy eliksir zycua
