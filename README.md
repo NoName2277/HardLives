@@ -1,11 +1,11 @@
 # HardLives
 Komendy:
-  zycia:
+  - /zycia:
   - pakazuje aktualny stan żyć
-  eliksirzycia:
+  - /eliksirzycia:
   - daje eliksir życia
     permisja: HardLives.potionoflife
-  dajzycie:
+  - /dajzycie:
   - daje życie grazcy
   - permission: HardLives.givelives
   - Usage: /dajzycie <player> <ilość>
