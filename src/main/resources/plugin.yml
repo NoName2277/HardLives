@@ -1,0 +1,26 @@
+name: HardLives
+version: '${project.version}'
+main: me.noname.hardlives.Main
+api-version: '1.19'
+depend:
+  - PlaceholderAPI
+commands:
+  zycia:
+  eliksirzycia:
+    permission: HardLives.potionoflife
+  dajzycie:
+    permission: HardLives.givelives
+    Usage: /dajzycie <player> <amount>
+
+permissions:
+  HardLives.*:
+    description: Add access to all permissions
+    children:
+      HardLives.potionoflife: true
+      HardLives.givelives: true
+  HardLives.potionoflife:
+    default: op
+    description: add access to potion of life commands
+  HardLives.givelives:
+    default: false
+    description: add access to givelive command

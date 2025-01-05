@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="HardLives:jar">
+    <output-path>$PROJECT_DIR$/../../serwer/1.19.2/testy/plugins</output-path>
+    <root id="archive" name="HardLives.jar">
+      <element id="module-output" name="HardLives" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/xerial/sqlite-jdbc/3.42.0.0/sqlite-jdbc-3.42.0.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
