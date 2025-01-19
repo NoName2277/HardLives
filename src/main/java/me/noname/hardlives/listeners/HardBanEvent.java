@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class HardBanEvent implements Listener {
@@ -29,9 +30,10 @@ public class HardBanEvent implements Listener {
         Date date = new Date(System.currentTimeMillis() + plugin.getConfig().getInt("BanTimeInMinute") * 60 * 1000);
         if (api.getLives(player) == 0) {
             api.setLives(player, plugin.getConfig().getInt("livesafterban"));
-            player.kickPlayer("§cBrak żyć!");
-            BanList banList = Bukkit.getBanList(BanList.Type.NAME);
-            banList.addBan(player.getDisplayName(), "§cBrak życ", date, null);
+            long currentMillis = System.currentTimeMillis();
+            long millisIn24Hours = 24 * 60 * 60 * 1000;
+            Timestamp timestamp = new Timestamp(currentMillis + millisIn24Hours);
+            api.ban(player, timestamp);
         }
 
         if (!api.hasLives(player)) return;

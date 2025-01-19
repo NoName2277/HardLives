@@ -23,6 +23,7 @@ public class HardGiveLiveCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length != 2) {
+            sender.sendMessage(ChatColor.RED + "Poprawne użycie: /dajzycie <gracz> <ilość>");
             return true;
         }
 
@@ -32,7 +33,7 @@ public class HardGiveLiveCommand implements CommandExecutor {
         }
 
         String playerName = args[0];
-        int amount = 0;
+        int amount;
 
         try {
             amount = Integer.parseInt(args[1]);
@@ -40,30 +41,31 @@ public class HardGiveLiveCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + args[1] + " nie jest liczbą!");
             return true;
         }
-        OfflinePlayer target = Bukkit.getOfflinePlayer(playerName);
 
-        if (target.isBanned()) {
-            try {
-                api.removeBanAndAddLives(target, amount);
-                api.removeLives((OfflinePlayer) sender, amount);
-                sender.sendMessage("§aPomyślnie wysłano życia graczowi " + target.getName());
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            try {
-                if (api.getLives((OfflinePlayer) sender) >= amount) {
+        OfflinePlayer target = Bukkit.getOfflinePlayer(playerName);
+        try {
+            if (api.isBanned(target)) {
+                api.unBan(target);
+                api.addLives(target, amount);
+                api.removeLives((Player) sender, amount);
+                sender.sendMessage("§aPomyślnie wysłano życie graczowi " + target.getName());
+            } else {
+                if (api.getLives((Player) sender) >= amount) {
                     api.addLives(target, amount);
-                    api.removeLives((OfflinePlayer) sender, amount);
-                    sender.sendMessage("§aPomyślnie wysłano życia graczowi " + target.getName());
-                }else{
+                    api.removeLives((Player) sender, amount);
+                    sender.sendMessage("§aPomyślnie wysłano życie graczowi " + target.getName());
+                } else {
                     sender.sendMessage("§cMasz za mało żyć!");
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
+        } catch (SQLException e) {
+            sender.sendMessage("§cBłąd podczas operacji SQL: " + e.getMessage());
         }
 
         return true;
     }
+
+
+
+
 }

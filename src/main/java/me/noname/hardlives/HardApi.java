@@ -26,7 +26,8 @@ public class HardApi {
             statement.execute("CREATE TABLE IF NOT EXISTS players (" +
                     "uuid TEXT PRIMARY KEY, " +
                     "username TEXT NOT NULL, " +
-                    "lives INTEGER NOT NULL DEFAULT 0)");
+                    "lives INTEGER NOT NULL DEFAULT 0," +
+                    "respawn TIMESTAMP NULL DEFAULT NULL)");
         }
     }
 
@@ -37,7 +38,6 @@ public class HardApi {
     }
 
     public void addPlayer(OfflinePlayer player) throws SQLException {
-        //this should error if the player already exists
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO players (uuid, username) VALUES (?, ?)")) {
             preparedStatement.setString(1, player.getUniqueId().toString());
             preparedStatement.setString(2, player.getName());
@@ -62,7 +62,7 @@ public class HardApi {
                 preparedStatement.setString(2, player.getUniqueId().toString());
                 preparedStatement.executeUpdate();
             }
-            updateTab((Player) player); // Call tabFormat after updating lives
+            updateTab((Player) player);
         }
     }
 
@@ -73,7 +73,7 @@ public class HardApi {
             if (resultSet.next()) {
                 return resultSet.getInt("lives");
             } else {
-                return 0; // Return 0 if the player has no points
+                return 0;
             }
         }
     }
@@ -106,6 +106,64 @@ public class HardApi {
         }
     }
 
+    public Timestamp getDeathTime(Player player) throws SQLException{
+        if(!isBanned(player)) return null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT respawn FROM players WHERE uuid = ?")){
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            try (ResultSet resultSet = preparedStatement.executeQuery()){
+                if(resultSet.next()){
+                    return resultSet.getTimestamp("respawn");
+                }else {
+                    return null;
+                }
+
+            }
+        }
+    }
+
+    public void ban(Player player, Timestamp timestamp) throws SQLException {
+        Bukkit.getLogger().info("Banowanie gracza: " + player.getDisplayName() + " na czas: " + timestamp);
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE players SET respawn = ? WHERE uuid = ?")) {
+            preparedStatement.setTimestamp(1, timestamp);
+            preparedStatement.setString(2, player.getUniqueId().toString());
+            preparedStatement.executeUpdate();
+            player.kickPlayer("§cBrak żyć! Ban zostanie zdjęty o " + timestamp.toString());
+            main.getLogger().info("Gracz " + player.getDisplayName() + " został zbanowany!");
+        }
+    }
+
+    public void unBan(OfflinePlayer player) throws SQLException {
+        if(!isBanned(player)) return;
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE players SET respawn = ? WHERE uuid = ?")){
+            preparedStatement.setTimestamp(1, null);
+            preparedStatement.setString(2, player.getName());
+            preparedStatement.executeUpdate();
+            main.getLogger().info("Gracz" + player.getName() + " został odbanowany!");
+
+        }
+    }
+
+    public void unBanAll() throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE players SET respawn = null")) {
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public boolean isBanned(OfflinePlayer player){
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT respawn FROM players WHERE uuid = ?")){
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            try (ResultSet resultSet = preparedStatement.executeQuery()){
+                if(preparedStatement.executeQuery().next()){
+                    Timestamp respawnTime = resultSet.getTimestamp("respawn");
+                    return respawnTime != null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
     public boolean hasLives(OfflinePlayer player) throws SQLException {
         return getLives(player) > 0;
     }
@@ -122,7 +180,7 @@ public class HardApi {
             } else if (getLives(player) < 10) {
                 player.setPlayerListFooter(String.valueOf(hearts));
             } else if (getLives(player) >= 10) {
-                player.setPlayerListFooter(ChatColor.DARK_RED + "§lMasz aktualnie " + getLives(player) + ChatColor.DARK_RED + "x§l❤");
+                player.setPlayerListFooter(ChatColor.DARK_RED + "§lMasz aktualnie " + getLives(player) + ChatColor.DARK_RED + "x❤");
             }
         }
     }
@@ -138,7 +196,7 @@ public class HardApi {
         } else if (getLives(player) < 10) {
             return (String.valueOf(hearts));
         } else if (getLives(player) >= 10) {
-          return ChatColor.DARK_RED + "§lMasz aktualnie " + getLives(player) + ChatColor.DARK_RED + "x§l❤";
+          return ChatColor.DARK_RED + "§lMasz aktualnie " + getLives(player) + ChatColor.DARK_RED + "x❤";
         }
         return "Error";
     }
@@ -169,5 +227,7 @@ public class HardApi {
         itemStack.setItemMeta(meta);
         return itemStack;
     }
+
+
 
 }

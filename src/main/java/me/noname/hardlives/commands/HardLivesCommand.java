@@ -4,6 +4,7 @@ import me.noname.hardlives.HardApi;
 import me.noname.hardlives.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,7 +43,8 @@ public class HardLivesCommand implements CommandExecutor, TabCompleter {
             }
             return true;
         }else if (args.length >= 2) {
-            Player target = Bukkit.getPlayerExact(args[1]);
+            OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+            OfflinePlayer offlineTarget = Bukkit.getPlayerExact(args[1]);
 
             if (target == null) {
                 sender.sendMessage(ChatColor.RED + "Nie ma gracza o takim nicku");
@@ -63,14 +65,14 @@ public class HardLivesCommand implements CommandExecutor, TabCompleter {
                     if (args[0].equalsIgnoreCase("dodaj")) {
                         try {
                             api.addLives(target, amount);
-                            sender.sendMessage("§aPomyślnie dodano zycia graczowi §l" + target.getDisplayName());
+                            sender.sendMessage("§aPomyślnie dodano zycia graczowi §l" + target.getName());
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
                     } else if (args[0].equalsIgnoreCase("usun")) {
                         try {
                             api.removeLives(target, amount);
-                            sender.sendMessage("§aPomyślnie usunieto zycia graczowi §l" + target.getDisplayName());
+                            sender.sendMessage("§aPomyślnie usunieto zycia graczowi §l" + target.getName());
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
@@ -78,7 +80,7 @@ public class HardLivesCommand implements CommandExecutor, TabCompleter {
                     } else if (args[0].equalsIgnoreCase("ustaw")) {
                         try {
                             api.setLives(target, amount);
-                            sender.sendMessage("§aPomyślnie ustawiono zycia graczowi §l" + target.getDisplayName());
+                            sender.sendMessage("§aPomyślnie ustawiono zycia graczowi §l" + target.getName());
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
@@ -90,6 +92,13 @@ public class HardLivesCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
             return true;
+        }else if(args.length ==1 && args[0].equalsIgnoreCase("uball") ){
+                    try {
+                        api.unBanAll();
+                        sender.sendMessage("§aPomyślnie odbanowano wszystkich graczy!");
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+            }
         }
 
         return true;
@@ -105,6 +114,7 @@ public class HardLivesCommand implements CommandExecutor, TabCompleter {
                 list.add("usun");
                 list.add("ustaw");
                 list.add("reload");
+                list.add("uball");
                 return list;
             }
             return null;
