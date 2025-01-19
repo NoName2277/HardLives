@@ -84,20 +84,22 @@ public class HardLivesCommand implements CommandExecutor, TabCompleter {
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
-                    } else if (args[0].equalsIgnoreCase("reload")) {
-                        plugin.reloadConfig();
-                        sender.sendMessage("§aPomyślnie przeładowano config!");
                     }
                 }
                 return true;
             }
             return true;
-        }else if(args.length ==1 && args[0].equalsIgnoreCase("uball") ){
-                    try {
-                        api.unBanAll();
-                        sender.sendMessage("§aPomyślnie odbanowano wszystkich graczy!");
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
+        }else if(args.length ==1){
+            if(args[0].equalsIgnoreCase("uball")) {
+                try {
+                    api.unBanAll();
+                    sender.sendMessage("§aPomyślnie odbanowano wszystkich graczy!");
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else if (args[0].equalsIgnoreCase("reload")) {
+                plugin.reloadConfig();
+                sender.sendMessage("§aPomyślnie przeładowano config!");
             }
         }
 

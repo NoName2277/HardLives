@@ -31,7 +31,7 @@ public class HardBanEvent implements Listener {
         if (api.getLives(player) == 0) {
             api.setLives(player, plugin.getConfig().getInt("livesafterban"));
             long currentMillis = System.currentTimeMillis();
-            long millisIn24Hours = 24 * 60 * 60 * 1000;
+            long millisIn24Hours = plugin.getConfig().getInt("BanTimeInMinute") * 60 * 1000;
             Timestamp timestamp = new Timestamp(currentMillis + millisIn24Hours);
             api.ban(player, timestamp);
         }
