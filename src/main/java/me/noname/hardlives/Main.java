@@ -29,7 +29,6 @@ public final class Main extends JavaPlugin {
             if (!getDataFolder().exists()) {
                 getDataFolder().mkdirs();
             }
-
             api = new HardApi(getDataFolder().getAbsolutePath() + "/lives.db", this);
         } catch (SQLException e) {
             e.printStackTrace();

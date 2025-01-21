@@ -136,6 +136,17 @@ public class HardApi {
         if(!isBanned(player)) return;
         try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE players SET respawn = ? WHERE uuid = ?")){
             preparedStatement.setTimestamp(1, null);
+            preparedStatement.setString(2, player.getUniqueId().toString());
+            preparedStatement.executeUpdate();
+            main.getLogger().info("Gracz" + player.getName() + " został odbanowany!");
+
+        }
+    }
+
+    public void unBanByName(OfflinePlayer player) throws SQLException {
+        if(!isBanned(player)) return;
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE players SET respawn = ? WHERE username = ?")){
+            preparedStatement.setTimestamp(1, null);
             preparedStatement.setString(2, player.getName());
             preparedStatement.executeUpdate();
             main.getLogger().info("Gracz" + player.getName() + " został odbanowany!");
