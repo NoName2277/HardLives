@@ -67,7 +67,7 @@ public class HardApi {
     }
 
     public int getLives(OfflinePlayer player) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT lives FROM players WHERE uuid = ?")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT lives FROM players WHERE uuid = ? ")) {
             preparedStatement.setString(1, player.getUniqueId().toString());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {

@@ -45,7 +45,7 @@ public class HardLivesCommand implements CommandExecutor, TabCompleter {
 
             if (args[0].equalsIgnoreCase("unban")) {
                 if (!sender.hasPermission("HardLives.admin")) {
-                    sender.sendMessage(ChatColor.RED + "Nie masz uprawnień do użycia tej komendy!");
+                    sender.sendMessage(ChatColor.RED + "Nie masz uprawnień do użycia tej komendy! ");
                     return true;
                 }
 

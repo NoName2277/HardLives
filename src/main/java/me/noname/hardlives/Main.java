@@ -32,7 +32,7 @@ public final class Main extends JavaPlugin {
             api = new HardApi(getDataFolder().getAbsolutePath() + "/lives.db", this);
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Failed to connect to database! " + e.getMessage());
+            System.out.println("Failed to connect to database!  " + e.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
         }
         enableListeners();
