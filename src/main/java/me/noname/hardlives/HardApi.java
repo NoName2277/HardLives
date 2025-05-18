@@ -127,8 +127,10 @@ public class HardApi {
             preparedStatement.setTimestamp(1, timestamp);
             preparedStatement.setString(2, player.getUniqueId().toString());
             preparedStatement.executeUpdate();
-            player.kickPlayer("§cBrak żyć! Ban zostanie zdjęty o " + timestamp.toString());
             main.getLogger().info("Gracz " + player.getDisplayName() + " został zbanowany!");
+            Bukkit.getScheduler().runTaskLater(main, () -> {
+                player.kickPlayer("§cBrak żyć! Ban zostanie zdjęty o " + timestamp.toString());
+            }, 1L);
         }
     }
 
